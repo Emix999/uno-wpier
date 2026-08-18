@@ -22,7 +22,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-# coś więcej 
-node_modules/
-dist/
-.env
