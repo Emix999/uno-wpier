@@ -30,7 +30,15 @@ io.on("connection", (socket) => {
   socket.on('takeCard', (key)=>{
     activeGames.get(key)?.takeCard(socket);
   })
+
+  socket.on('endTurn', (key)=>{
+    activeGames.get(key)?.endTurn(socket);
+  })
   
+  socket.on('startGame', (key)=>{
+    activeGames.get(key)?.startGame(socket);
+  })
+
   socket.on("disconnect", () => {
     console.log("Rozłączono:", socket.id);
   });

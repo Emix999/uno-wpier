@@ -3,6 +3,7 @@ import {Player} from "../socket/createPlayer"
 import { Card } from "./Cards";
 import { deck } from "./Deck";
 import { emit } from "node:cluster";
+import { io } from "../server";
 
 export class Game{
     key:string;
@@ -34,6 +35,24 @@ export class Game{
             this.players[this.currentPlayer].hand.push(card);
             socket.emit("cardTaken", card);
 
+        }
+    }
+
+    endTurn(socket:Socket){
+        if(this.isThisRightPlayer(socket)){
+            if(this.players.length-1==this.currentPlayer)this.currentPlayer=0;
+            else this.currentPlayer++;
+
+
+        }
+    }
+
+    startGame(socket:Socket){
+        if(this.players[0].socket.id==socket.id){
+            socket.emit("cantStartGame");
+        }
+        else{
+            io.to(this.key).emit("startingGame");
         }
     }
 }

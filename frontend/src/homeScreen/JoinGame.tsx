@@ -9,7 +9,7 @@ function JoinGame() {
 
     function handleJoinGame() {
         socket.once("roomJoined", (key:string)=>{
-          navigate("/GameScreen", {state: {roomKey: key}})
+          navigate("/LobbyScreen", {state: {roomKey: key}})
         })
         socket.on("roomNotFound", (key:string)=>{
           setKey("key: "+key+" wasnt found");

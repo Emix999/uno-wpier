@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import StartGame from './StartGame'
+import StartGame from './CreateGame'
 import { socket } from '../socket'
 import JoinGame from './JoinGame'
 
