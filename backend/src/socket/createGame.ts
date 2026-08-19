@@ -4,11 +4,11 @@ import { Player } from "./createPlayer";
 import {activeGames} from "../server.ts";
 
 
-export function CreateGame(socket:Socket){
+export function CreateGame(socket:Socket, name:string){
     let key=(Math.floor(Math.random()*100)).toString();
-    socket.emit("roomCreated",key);
-    const player1= new Player(socket);
+    const player1= new Player(socket, name);
     const game = new Game(key, player1);
     activeGames.set(key, game);
     socket.join(key);
+    socket.emit("roomCreated", key, game.updatePlayerList());
 }

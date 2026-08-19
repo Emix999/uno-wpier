@@ -1,18 +1,19 @@
 import { useNavigate } from 'react-router-dom'
 import { socket } from '../socket'
 
-function StartGame() {
+function CreateGame(props: { name:string }) {
     const navigate = useNavigate()
 
-    function handleStartGame() {
-        socket.once("roomCreated", (key:string)=>{
-          navigate("/LobbyScreen", {state: {roomKey: key}})
+
+    function handleCreateGame() {
+        socket.once("roomCreated", (key:string, playerList:string[])=>{
+          navigate("/LobbyScreen", {state: {roomKey: key, playerList: playerList}})
         })
 
-        socket.emit("createGame")
+        socket.emit("createGame", props.name)
     }
 
-  return <button onClick={handleStartGame}>Create Game</button>
+  return <button onClick={handleCreateGame}>Create Game</button>
 }
 
-export default StartGame
+export default CreateGame

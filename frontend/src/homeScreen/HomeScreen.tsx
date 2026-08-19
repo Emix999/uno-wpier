@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
-import StartGame from './CreateGame'
+import CreateGame from './CreateGame'
 import { socket } from '../socket'
 import JoinGame from './JoinGame'
+import EnterName from './EnterName'
 
 
 
 function HomeScreen() {
   const [conId, setConId] = useState<undefined|string>(undefined)
+  const [name, setName] = useState<string>("");
 
   useEffect(()=>{
     function handleConnect(){
@@ -24,9 +26,10 @@ function HomeScreen() {
 
   return (
     <main>
-      <StartGame />
+      <CreateGame name={name}/>
       <p>ID połączenia: {conId}</p>
-      <JoinGame />
+      <JoinGame name={name}/>
+      <EnterName name={name} setName={setName}/>
     </main>
 )
 }

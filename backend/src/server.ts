@@ -19,12 +19,12 @@ export const io = new Server(httpServer, {
 io.on("connection", (socket) => {
   console.log("Połączono:", socket.id);
 
-  socket.on('createGame', ()=>{
-    CreateGame(socket);
+  socket.on('createGame', (name)=>{
+    CreateGame(socket, name);
   })
 
-  socket.on('joinGame', (key)=>{
-    JoinGame(socket, key);
+  socket.on('joinGame', (key, name)=>{
+    JoinGame(socket, key, name);
   })
 
   socket.on('takeCard', (key)=>{

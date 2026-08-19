@@ -2,20 +2,20 @@ import { useNavigate } from 'react-router-dom'
 import { socket } from '../socket'
 import { useState } from 'react'
 
-function JoinGame() {
-    const navigate = useNavigate()
+function JoinGame(props: { name:string }) {
+    const navigate = useNavigate();
 
-    const [key, setKey] = useState<string>()
+    const [key, setKey] = useState<string>();
 
     function handleJoinGame() {
-        socket.once("roomJoined", (key:string)=>{
-          navigate("/LobbyScreen", {state: {roomKey: key}})
+        socket.once("roomJoined", (key:string, playerList:string[])=>{
+          navigate("/LobbyScreen", {state: {roomKey: key, playerList: playerList}})
         })
-        socket.on("roomNotFound", (key:string)=>{
+        socket.once("roomNotFound", (key:string)=>{
           setKey("key: "+key+" wasnt found");
         })
 
-        socket.emit("joinGame", key)
+        socket.emit("joinGame", key, props.name);
     }
 
   return(
