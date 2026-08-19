@@ -1,13 +1,17 @@
 import type { Color } from "./Types";
 export abstract class Card{
-  abstract name: string
-  abstract symbol: string
-  color: Color
+  abstract name: string;
+  abstract symbol: string;
+  color: Color;
+  static numberOfCards=0;
+  id:number;
 
   constructor(
     color: Color,
   ) {
     this.color=color
+    this.id=Card.numberOfCards;
+    Card.numberOfCards++;
   }
 
   abstract playMe():void

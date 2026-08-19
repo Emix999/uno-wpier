@@ -3,7 +3,7 @@ import {activeGames} from "../server.ts";
 import { Player } from "./createPlayer.ts";
 
 export function JoinGame(socket:Socket, key:string, name:string){
-    if(activeGames.has(key)){
+    if(activeGames.has(key)&&activeGames.get(key)?.isGameStarted==false){
         const game = activeGames.get(key);
         const player = new Player(socket, name);
         game?.addPlayer(player);

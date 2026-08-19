@@ -10,6 +10,7 @@ export class Game{
     currentPlayer:number;
     gameDeck:Card[];
     isGameStarted:boolean;
+    cardOnTop:Card;
 
     constructor(key:string, player1:Player){
         this.key=key;
@@ -17,9 +18,8 @@ export class Game{
         this.currentPlayer=0;
         this.gameDeck=[...deck];
         this.isGameStarted=false;
-    }
-    nextTurn(){
-        this.currentPlayer++;
+        this.cardOnTop=this.gameDeck[this.gameDeck.length-1];
+        this.gameDeck.pop();
     }
     addPlayer(player:Player){
         this.players.push(player);
@@ -34,12 +34,12 @@ export class Game{
         return list;
     }
 
-    isDoingSthLegal(socket:Socket){
+    isDoingThisLegal(socket:Socket){
         return (this.players[this.currentPlayer].socket.id==socket.id&&this.isGameStarted)
     }
 
     takeCard(socket:Socket){
-        if(this.isDoingSthLegal(socket)){
+        if(this.isDoingThisLegal(socket)){
             let card=this.gameDeck[this.gameDeck.length-1];
             this.gameDeck.pop();
             this.players[this.currentPlayer].hand.push(card);
@@ -49,10 +49,25 @@ export class Game{
     }
 
     endTurn(socket:Socket){
-        if(this.isDoingSthLegal(socket)){
+        if(this.isDoingThisLegal(socket)){
             if(this.players.length-1==this.currentPlayer)this.currentPlayer=0;
             else this.currentPlayer++;
-            io.to(this.key).emit("turnEnded");
+            io.to(this.key).emit("turnEnded", this.currentPlayer, this.players[this.currentPlayer].name);
+        }
+    }
+
+    useCard(socket:Socket, card:Card){
+        if(this.isDoingThisLegal(socket)){
+            //tu gdzieś się przypnie logikę wykładania kart
+            //na razie każdą na każdą można wyłożyć
+            if(true){
+                socket.emit("cardUsed");
+                this.cardOnTop=card;
+                io.to(this.key).emit("deckUpdate", this.cardOnTop);
+            }
+            else{
+                socket.emit("cardUsingError");
+            }
         }
     }
 
