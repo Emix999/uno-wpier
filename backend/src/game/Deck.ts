@@ -1,6 +1,6 @@
 import {One, Card} from "./Cards"
-export const deck: Card[] = []
-const usedCards: Card[] = []
+export const deck: Card[] = [];
+const usedCards: Card[] = [];
 
 //tymczasowe do testów
 for(let i=0;i<25;i++){
@@ -13,7 +13,7 @@ for(let i=0;i<25;i++){
 //dodać reszte kart w decku
 
 //losowanie kolejności dodać
-export function takeCard(){
-    console.log("You have taken card: "+deck[deck.length-1].symbol+" "+deck[deck.length-1].color)
-    deck.pop()
-}
+// export function takeCard(){
+//     console.log("You have taken card: "+deck[deck.length-1].symbol+" "+deck[deck.length-1].color)
+//     deck.pop()
+// }

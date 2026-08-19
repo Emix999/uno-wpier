@@ -6,7 +6,7 @@ export function JoinGame(socket:Socket, key:string){
     if(activeGames.has(key)){
         const game = activeGames.get(key);
         const player = new Player(socket);
-        game?.players.push(player);
+        game?.addPlayer(player);
         socket.emit("roomJoined",key);
         socket.join(key);
     }

@@ -5,6 +5,7 @@ import { JoinGame } from "./socket/joinGame";
 import { Socket } from "dgram";
 import {Game} from "./game/Game"
 
+
 const httpServer = createServer();
 
 export const activeGames = new Map<string,Game>();
@@ -24,6 +25,10 @@ io.on("connection", (socket) => {
 
   socket.on('joinGame', (key)=>{
     JoinGame(socket, key);
+  })
+
+  socket.on('takeCard', (key)=>{
+    activeGames.get(key)?.takeCard(socket);
   })
   
   socket.on("disconnect", () => {
