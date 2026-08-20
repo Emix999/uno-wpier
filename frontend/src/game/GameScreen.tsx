@@ -7,10 +7,11 @@ import MyCards from "./MyCards.tsx";
 import Deck from "./Deck.tsx";
 
 function GameScreen() {
-  
-  const [myCards, setMyCards] = useState<Card[]>([]);
   const location = useLocation();
+  const [myCards, setMyCards] = useState<Card[]>([]);
+
   let key = location.state?.roomKey;
+  let startingCard = location.state?.cardOnTop;
 
   return(
     <main>
@@ -19,7 +20,7 @@ function GameScreen() {
       <TakeCard roomKey={key} setCards={setMyCards}/>
       <EndTurn roomKey={key}/>
       <MyCards roomKey={key} myCards={myCards} setCards={setMyCards}/>
-      <Deck />
+      <Deck startingCard={startingCard}/>
     </main>
 
   )

@@ -42,9 +42,8 @@ export class Game{
         if(this.isDoingThisLegal(socket)){
             let card=this.gameDeck[this.gameDeck.length-1];
             this.gameDeck.pop();
-            this.players[this.currentPlayer].hand.push(card);
+            this.players[this.currentPlayer].hand.set(card.id, card);
             socket.emit("cardTaken", card);
-
         }
     }
 
@@ -56,28 +55,39 @@ export class Game{
         }
     }
 
-    useCard(socket:Socket, card:Card){
+    useCard(socket:Socket, cardId:number, status: (success: boolean) => void){
         if(this.isDoingThisLegal(socket)){
-            //tu gdzieś się przypnie logikę wykładania kart
-            //na razie każdą na każdą można wyłożyć
-            if(true){
-                socket.emit("cardUsed");
+            let card = this.players[this.currentPlayer].hand.get(cardId);
+            if(card?.canYouPlayMe(this.cardOnTop)){
+                status(true);
                 this.cardOnTop=card;
                 io.to(this.key).emit("deckUpdate", this.cardOnTop);
             }
             else{
-                socket.emit("cardUsingError");
+                status(false);
             }
         }
     }
 
     startGame(socket:Socket){
         if(this.players[0].socket.id==socket.id){
-            io.to(this.key).emit("startingGame");
+            this.shuffleDeck();
+            this.cardOnTop=this.gameDeck[this.gameDeck.length-1];
+            io.to(this.key).emit("startingGame", this.cardOnTop);
+            this.gameDeck.pop();
             this.isGameStarted=true;
         }
         else{
             socket.emit("cantStartGame");
+        }
+    }
+
+    shuffleDeck(){
+        let currentIndex = this.gameDeck.length;
+        while (currentIndex != 0) {
+            let randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [this.gameDeck[currentIndex], this.gameDeck[randomIndex]] = [this.gameDeck[randomIndex], this.gameDeck[currentIndex]];
         }
     }
 }

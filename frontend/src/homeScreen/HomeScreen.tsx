@@ -15,14 +15,16 @@ function HomeScreen() {
       setConId(socket.id)
     }
 
+    if (socket.connected) {
+      handleConnect();
+    }
+
     socket.on("connect", handleConnect)
 
   return()=>{
     socket.off("connect", handleConnect)
   }
   },[])
-
-
 
   return (
     <main>

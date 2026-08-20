@@ -40,8 +40,8 @@ io.on("connection", (socket) => {
     activeGames.get(key)?.startGame(socket);
   })
 
-  socket.on('useCard', (key, card:Card)=>{
-    activeGames.get(key)?.useCard(socket, card);
+  socket.on('useCard', (key, cardId:number, status: (success: boolean) => void)=>{
+    activeGames.get(key)?.useCard(socket, cardId, status);
   })
 
   socket.on("disconnect", () => {

@@ -2,9 +2,9 @@ import { useEffect, useState } from "react"
 import { socket } from "../socket"
 import { Card } from "../typesClasses/Cards"
 
-function Deck(){
+function Deck(props: { startingCard:Card }){
 
-    const [cardOnTop, setCardOnTop]=useState<Card>();
+    const [cardOnTop, setCardOnTop]=useState<Card>(props.startingCard);
 
     useEffect(()=>{
         function handleDeckUpdate(card:Card){
