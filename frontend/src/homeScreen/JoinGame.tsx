@@ -1,12 +1,10 @@
 import { useNavigate } from 'react-router-dom'
 import { socket } from '../socket'
 import { useState } from 'react'
-import type { ResponseEmit } from '../typesClasses/Types';
+import type { ResponseJoinGame } from '../typesClasses/Interfaces';
 
-interface ResponseJoin extends ResponseEmit{
-  key: string;
-  playerList: string[];
-}
+
+
 
 function JoinGame(props: { name: string }) {
   const navigate = useNavigate();
@@ -14,7 +12,7 @@ function JoinGame(props: { name: string }) {
   const [key, setKey] = useState<string>();
 
   function handleJoinGame() {// tu też było to stare zwalone odbieranie wiadomości ale je napirawiłem :3
-    socket.emit("joinGame", key, props.name, (response: ResponseJoin) => {
+    socket.emit("joinGame", key, props.name, (response: ResponseJoinGame) => {
       if (response.succes) {
         console.log(response.message);
         navigate("/LobbyScreen", { state: { roomKey: response.key, playerList: response.playerList } })
@@ -28,7 +26,7 @@ function JoinGame(props: { name: string }) {
 
   return (
     <div>
-      <input type="text" max="3" value={key} onChange={e => setKey(e.target.value)} />
+      <input type="text" max="3" value={key} onChange={e => setKey(e.target.value)} />{/*ta trójka jest tutaj tylko tymczasowo jak coś*/}
       <button onClick={handleJoinGame}>Join Game</button>
     </div>
   )

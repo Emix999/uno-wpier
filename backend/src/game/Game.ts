@@ -3,6 +3,7 @@ import {Player} from "../socket/createPlayer"
 import { Card } from "./Cards";
 import { deck } from "./Deck";
 import { io } from "../server";
+import { ResponseEmit, ResponseEndTurn, ResponseJoinGame, ResponseTakeCard } from "./Interfaces";
 
 export class Game{
     key:string;
@@ -44,12 +45,12 @@ export class Game{
         return (this.players[this.currentPlayer].socket.id==socket.id&&this.isGameStarted)
     }
 
-    takeCard(socket:Socket){
+    takeCard(socket:Socket, callback: (response: ResponseTakeCard) => void){
         if(this.isDoingThisLegal(socket)&&this.isActionCount()){
             let card=this.gameDeck[this.gameDeck.length-1];
             this.gameDeck.pop();
             this.players[this.currentPlayer].hand.set(card.id, card);
-            socket.emit("cardTaken", card);
+            callback({succes: true, message: "card teaken succesfully", card:card});
             this.actionsThisTurn++;
         }
     }
@@ -58,23 +59,23 @@ export class Game{
         if(this.isDoingThisLegal(socket)){
             if(this.players.length-1==this.currentPlayer)this.currentPlayer=0;
             else this.currentPlayer++;
-            io.to(this.key).emit("turnEnded", this.currentPlayer, this.players[this.currentPlayer].name);
+            io.to(this.key).emit("turnEnded", {succes:true, message: "turn ended", id:this.currentPlayer, name:this.players[this.currentPlayer].name});
             this.actionsThisTurn=0;
         }
     }
 
-    useCard(socket:Socket, cardId:number, status: (success: boolean) => void){
+    useCard(socket:Socket, cardId:number, callback: (response: ResponseEmit) => void){
         if(this.isDoingThisLegal(socket)&&this.isActionCount()){
             let card = this.players[this.currentPlayer].hand.get(cardId);
             if(card?.canYouPlayMe(this.cardOnTop)){
-                status(true);
+                callback({succes: true, message: "card used succesfully"})
                 this.cardOnTop=card;
                 this.createEffectOfCard(card);
                 io.to(this.key).emit("deckUpdate", this.cardOnTop);
                 this.actionsThisTurn++;
             }
             else{
-                status(false);
+                callback({succes: false, message: "card using error"})
             }
         }
     }

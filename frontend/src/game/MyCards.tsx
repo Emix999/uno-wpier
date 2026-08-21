@@ -1,6 +1,6 @@
 import { socket } from "../socket"
 import { Card } from "../typesClasses/Cards"
-import type { ResponseEmit } from "../typesClasses/Types";
+import type { ResponseEmit } from "../typesClasses/Interfaces";
 
 
 function MyCards(props: {roomKey:string ,myCards:Card[], setCards: React.Dispatch<React.SetStateAction<Card[]>>}){

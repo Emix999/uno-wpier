@@ -5,7 +5,7 @@ import { JoinGame } from "./socket/joinGame";
 import { Socket } from "dgram";
 import {Game} from "./game/Game"
 import { Card } from "./game/Cards";
-
+import { ResponseEmit, ResponseEndTurn, ResponseJoinGame, ResponseTakeCard } from "./game/Interfaces";
 
 const httpServer = createServer();
 
@@ -24,12 +24,12 @@ io.on("connection", (socket) => {
     CreateGame(socket, name);
   })
 
-  socket.on('joinGame', (key, name)=>{
-    JoinGame(socket, key, name);
+  socket.on('joinGame', (key, name, callback: (response: ResponseEmit) => void)=>{
+    JoinGame(socket, key, name, callback);
   })
 
-  socket.on('takeCard', (key)=>{
-    activeGames.get(key)?.takeCard(socket);
+  socket.on('takeCard', (key, callback: (response: ResponseTakeCard) => void)=>{
+    activeGames.get(key)?.takeCard(socket, callback);
   })
 
   socket.on('endTurn', (key)=>{
@@ -40,8 +40,8 @@ io.on("connection", (socket) => {
     activeGames.get(key)?.startGame(socket);
   })
 
-  socket.on('useCard', (key, cardId:number, status: (success: boolean) => void)=>{
-    activeGames.get(key)?.useCard(socket, cardId, status);
+  socket.on('useCard', (key, cardId:number, callback: (response: ResponseEmit) => void)=>{
+    activeGames.get(key)?.useCard(socket, cardId, callback);
   })
 
   socket.on("disconnect", () => {
