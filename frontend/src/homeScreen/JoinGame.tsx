@@ -1,27 +1,35 @@
 import { useNavigate } from 'react-router-dom'
 import { socket } from '../socket'
 import { useState } from 'react'
+import type { ResponseEmit } from '../typesClasses/Types';
 
-function JoinGame(props: { name:string }) {
-    const navigate = useNavigate();
+interface ResponseJoin extends ResponseEmit{
+  key: string;
+  playerList: string[];
+}
 
-    const [key, setKey] = useState<string>();
+function JoinGame(props: { name: string }) {
+  const navigate = useNavigate();
 
-    function handleJoinGame() {// tu też było to stare zwalone odbieranie wiadomości ale je napirawiłem :3
-        socket.once("roomJoined", (key:string, playerList:string[])=>{
-          navigate("/LobbyScreen", {state: {roomKey: key, playerList: playerList}})
-        })
-        socket.once("roomNotFound", (key:string)=>{
-          setKey("key: "+key+" wasnt found");
-        })
+  const [key, setKey] = useState<string>();
 
-        socket.emit("joinGame", key, props.name);
-    }
+  function handleJoinGame() {// tu też było to stare zwalone odbieranie wiadomości ale je napirawiłem :3
+    socket.emit("joinGame", key, props.name, (response: ResponseJoin) => {
+      if (response.succes) {
+        console.log(response.message);
+        navigate("/LobbyScreen", { state: { roomKey: response.key, playerList: response.playerList } })
+      }
+      else {
+        setKey(response.message);
+      }
+    });
+  }
 
-  return(
+
+  return (
     <div>
-        <input type="text" max="3" value={key} onChange={e=>setKey(e.target.value)}/>
-        <button onClick={handleJoinGame}>Join Game</button>
+      <input type="text" max="3" value={key} onChange={e => setKey(e.target.value)} />
+      <button onClick={handleJoinGame}>Join Game</button>
     </div>
   )
 }
