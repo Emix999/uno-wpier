@@ -11,6 +11,7 @@ export class Game{
     gameDeck:Card[];
     isGameStarted:boolean;
     cardOnTop:Card;
+    actionsThisTurn:number;
 
     constructor(key:string, player1:Player){
         this.key=key;
@@ -20,6 +21,7 @@ export class Game{
         this.isGameStarted=false;
         this.cardOnTop=this.gameDeck[this.gameDeck.length-1];
         this.gameDeck.pop();
+        this.actionsThisTurn=0;
     }
     addPlayer(player:Player){
         this.players.push(player);
@@ -34,16 +36,21 @@ export class Game{
         return list;
     }
 
+    isActionCount(){
+        return this.actionsThisTurn<1;
+    }
+
     isDoingThisLegal(socket:Socket){
         return (this.players[this.currentPlayer].socket.id==socket.id&&this.isGameStarted)
     }
 
     takeCard(socket:Socket){
-        if(this.isDoingThisLegal(socket)){
+        if(this.isDoingThisLegal(socket)&&this.isActionCount()){
             let card=this.gameDeck[this.gameDeck.length-1];
             this.gameDeck.pop();
             this.players[this.currentPlayer].hand.set(card.id, card);
             socket.emit("cardTaken", card);
+            this.actionsThisTurn++;
         }
     }
 
@@ -52,17 +59,19 @@ export class Game{
             if(this.players.length-1==this.currentPlayer)this.currentPlayer=0;
             else this.currentPlayer++;
             io.to(this.key).emit("turnEnded", this.currentPlayer, this.players[this.currentPlayer].name);
+            this.actionsThisTurn=0;
         }
     }
 
     useCard(socket:Socket, cardId:number, status: (success: boolean) => void){
-        if(this.isDoingThisLegal(socket)){
+        if(this.isDoingThisLegal(socket)&&this.isActionCount()){
             let card = this.players[this.currentPlayer].hand.get(cardId);
             if(card?.canYouPlayMe(this.cardOnTop)){
                 status(true);
                 this.cardOnTop=card;
                 this.createEffectOfCard(card);
                 io.to(this.key).emit("deckUpdate", this.cardOnTop);
+                this.actionsThisTurn++;
             }
             else{
                 status(false);
