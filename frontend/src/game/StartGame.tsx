@@ -5,7 +5,7 @@ import type { Card } from '../typesClasses/Cards';
 
 function StartGame(props: { roomKey:string }) {
     const navigate = useNavigate();
-
+    //To jest zwalone i inne niż wszędzie indziej odbieranie wiadomości... ja wiem, może kiedyś to naprawię
     useEffect(() => {
         function handleCantStartGame(){
             console.log("Only host of this lobby can start game");    

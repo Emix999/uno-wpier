@@ -7,7 +7,7 @@ function JoinGame(props: { name:string }) {
 
     const [key, setKey] = useState<string>();
 
-    function handleJoinGame() {
+    function handleJoinGame() {// tu też było to stare zwalone odbieranie wiadomości ale je napirawiłem :3
         socket.once("roomJoined", (key:string, playerList:string[])=>{
           navigate("/LobbyScreen", {state: {roomKey: key, playerList: playerList}})
         })

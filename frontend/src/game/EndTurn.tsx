@@ -1,13 +1,22 @@
 import { socket } from "../socket"
+import type { ResponseEmit } from "../typesClasses/Types";
+
+interface ResponsePlayer extends ResponseEmit{
+    name:string;
+    id:number;
+}
 
 function EndTurn(props: { roomKey:string }){
     
     function handleEndTurn(){
-        socket.once("turnEnded", (id: number, name:string)=>{
-            console.log("it is now turn of player "+id+" - "+name);
-        })
-
-        socket.emit("endTurn", props.roomKey);
+        socket.emit("endTurn", props.roomKey, (response:ResponsePlayer)=>{
+                    if(response.succes){
+                        console.log("it is now turn of player "+response.id+" - "+response.name);
+                    }
+                    else{
+                        console.log(response.message);
+                    }
+                });
     }
 
     return <button onClick={handleEndTurn}>End Turn</button>

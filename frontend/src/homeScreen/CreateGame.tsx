@@ -5,7 +5,7 @@ function CreateGame(props: { name:string }) {
     const navigate = useNavigate()
 
 
-    function handleCreateGame() {
+    function handleCreateGame() {//tu też jest to stare zwalone odbieranie wiadomości
         socket.once("roomCreated", (key:string, playerList:string[])=>{
           navigate("/LobbyScreen", {state: {roomKey: key, playerList: playerList}})
         })

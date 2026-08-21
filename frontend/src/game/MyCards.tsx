@@ -1,18 +1,29 @@
 import { socket } from "../socket"
 import { Card } from "../typesClasses/Cards"
+import type { ResponseEmit } from "../typesClasses/Types";
+
 
 function MyCards(props: {roomKey:string ,myCards:Card[], setCards: React.Dispatch<React.SetStateAction<Card[]>>}){
 
     function handleUseCard(card:Card){
-        socket.emit("useCard", props.roomKey, card.id, (status:boolean)=>{
-            if(status){
-                console.log("succesfully used card");
+        // socket.emit("endTurn", props.roomKey, (response:ResponseEmit)=>{
+        //     if(response.succes){
+        //         console.log(response.message);
+        //     }
+        //     else{
+        //         console.log(response.message);
+        //     }
+        // });
+
+        socket.emit("useCard", props.roomKey, card.id, (response:ResponseEmit)=>{
+            if(response.succes){
+                console.log(response.message);
                 props.setCards(prev =>
                     prev.filter(c => c.id !== card.id)
                 );
             }
             else{
-                console.log("you cant use this card in this space-time");
+                console.log(response.message);
             }
         });
     }
