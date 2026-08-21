@@ -61,12 +61,17 @@ export class Game{
             if(card?.canYouPlayMe(this.cardOnTop)){
                 status(true);
                 this.cardOnTop=card;
+                this.createEffectOfCard(card);
                 io.to(this.key).emit("deckUpdate", this.cardOnTop);
             }
             else{
                 status(false);
             }
         }
+    }
+
+    createEffectOfCard(card:Card){
+        card.PlayMe(this);
     }
 
     startGame(socket:Socket){
