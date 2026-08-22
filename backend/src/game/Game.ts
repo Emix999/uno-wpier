@@ -4,6 +4,7 @@ import { Card } from "./Cards";
 import { deck } from "./Deck";
 import { io } from "../server";
 import { ResponseEmit, ResponseEndTurn, ResponseJoinGame, ResponseTakeCard } from "./Interfaces";
+import { SocketEventMap } from "node:dgram";
 
 export class Game{
     key:string;
@@ -25,7 +26,7 @@ export class Game{
         this.cardOnTop=this.gameDeck[this.gameDeck.length-1];
         this.gameDeck.pop();
         this.actionsThisTurn=0;
-        this.numberOfStartingCards=7;
+        this.numberOfStartingCards=1;
         this.hostIndex=0;
     }
     addPlayer(player:Player){
@@ -61,11 +62,20 @@ export class Game{
 
     endTurn(socket:Socket){
         if(this.isDoingThisLegal(socket)){
+            console.log(this.players[this.currentPlayer].hand.size);
+            if(this.players[this.currentPlayer].hand.size===0){
+                this.endGame(socket);
+                return;
+            }
             if(this.players.length-1==this.currentPlayer)this.currentPlayer=0;
             else this.currentPlayer++;
             io.to(this.key).emit("turnEnded", {succes:true, message: "turn ended", id:this.currentPlayer, name:this.players[this.currentPlayer].name});
             this.actionsThisTurn=0;
         }
+    }
+    
+    endGame(socket:Socket){
+        io.to(this.key).emit("endGame",{id:this.currentPlayer, name:this.players[this.currentPlayer].name});
     }
 
     useCard(socket:Socket, cardId:number, callback: (response: ResponseEmit) => void){
@@ -74,6 +84,7 @@ export class Game{
             if(card?.canYouPlayMe(this.cardOnTop)){
                 callback({succes: true, message: "card used succesfully"})
                 this.cardOnTop=card;
+                this.players[this.currentPlayer].hand.delete(cardId);
                 this.createEffectOfCard(card);
                 io.to(this.key).emit("deckUpdate", this.cardOnTop);
                 this.actionsThisTurn++;
@@ -135,4 +146,5 @@ export class Game{
             [this.gameDeck[currentIndex], this.gameDeck[randomIndex]] = [this.gameDeck[randomIndex], this.gameDeck[currentIndex]];
         }
     }
+
 }
