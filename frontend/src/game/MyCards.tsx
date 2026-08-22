@@ -1,6 +1,7 @@
+import { useEffect } from "react";
 import { socket } from "../socket"
 import { Card } from "../typesClasses/Cards"
-import type { ResponseEmit } from "../typesClasses/Interfaces";
+import type { ResponseEmit, ResponseMyHand } from "../typesClasses/Interfaces";
 
 
 function MyCards(props: {roomKey:string ,myCards:Card[], setCards: React.Dispatch<React.SetStateAction<Card[]>>}){
@@ -27,6 +28,18 @@ function MyCards(props: {roomKey:string ,myCards:Card[], setCards: React.Dispatc
             }
         });
     }
+
+    useEffect(() => {
+        socket.emit("getHand", props.roomKey);
+        console.log("Chcę dostać kartę");
+    }, []);
+
+    useEffect(()=>{
+        socket.on("myHand", (response:ResponseMyHand)=>{
+            props.setCards(response.cards);
+        })
+    }, [])
+
 
     return (//to jest tymaczsowe... Jak pewnie się domyślasz :3
         <div>

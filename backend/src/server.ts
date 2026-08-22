@@ -32,6 +32,11 @@ io.on("connection", (socket) => {
     activeGames.get(key)?.takeCard(socket, callback);
   })
 
+  socket.on('getHand', (key)=>{
+    activeGames.get(key)?.giveStartingCards(socket);
+    console.log("wiem że chchesz ją dostać");
+  }) 
+
   socket.on('endTurn', (key)=>{
     activeGames.get(key)?.endTurn(socket);
   })

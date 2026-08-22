@@ -13,6 +13,8 @@ export class Game{
     isGameStarted:boolean;
     cardOnTop:Card;
     actionsThisTurn:number;
+    numberOfStartingCards:number;
+    hostIndex:number;
 
     constructor(key:string, player1:Player){
         this.key=key;
@@ -23,6 +25,8 @@ export class Game{
         this.cardOnTop=this.gameDeck[this.gameDeck.length-1];
         this.gameDeck.pop();
         this.actionsThisTurn=0;
+        this.numberOfStartingCards=7;
+        this.hostIndex=0;
     }
     addPlayer(player:Player){
         this.players.push(player);
@@ -84,8 +88,32 @@ export class Game{
         card.PlayMe(this);
     }
 
+    giveStartingCards(socket:Socket){
+        if(this.players[0].hand)
+        console.log("usytawię karty dla graczy")
+        for(let i=0;i<this.numberOfStartingCards;i++){
+            for(let p of this.players){
+                let card=this.gameDeck[this.gameDeck.length-1];
+                this.gameDeck.pop();
+                p.hand.set(card.id, card);
+            }
+        }
+        console.log("ustawiłem wszystkim graczom karty")
+        this.sendAllPlayersHand(socket);
+    }
+
+    sendAllPlayersHand(socket:Socket){
+        if(this.isGameStarted&&this.players[this.hostIndex].socket==socket){
+            for(let p of this.players){
+                console.log("wysyłam karty do każdego gracza");
+                const hand = [...p.hand.values()];
+                p.socket.emit("myHand", {succes: true, message: "Succesfully got hands of players", cards:hand});
+            }
+        }
+    }
+
     startGame(socket:Socket){
-        if(this.players[0].socket.id==socket.id){
+        if(this.players[this.hostIndex].socket.id==socket.id){
             this.shuffleDeck();
             this.cardOnTop=this.gameDeck[this.gameDeck.length-1];
             io.to(this.key).emit("startingGame", this.cardOnTop);

@@ -18,3 +18,7 @@ export interface ResponseEndTurn extends ResponseEmit{
 export interface ResponseTakeCard extends ResponseEmit{
     card:Card;
 }
+
+export interface ResponseMyHand extends ResponseEmit{
+    cards:Card[];
+}
