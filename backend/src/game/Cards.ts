@@ -6,11 +6,12 @@ export abstract class Card {
   color: Color;
   static numberOfCards = 0;
   id: number;
+  abstract askForColor: boolean;
 
   constructor(
     color: Color,
   ) {
-    this.color = color
+    this.color = color;
     this.id = Card.numberOfCards;
     Card.numberOfCards++;
   }
@@ -29,6 +30,7 @@ export abstract class BlackCard extends Card {
 }
 
 export abstract class ColoredCard extends Card {
+  askForColor=false;
   canYouPlayMe(currentCard: Card): boolean {
     return (currentCard.color == this.color || currentCard.symbol == this.symbol);
   }
@@ -127,13 +129,15 @@ export class Reverse extends ColoredCard {
 }
 
 export class PlusFour extends BlackCard {
+  askForColor = true;
   symbol = "+4";
   name = "plus four";
   PlayMe(game:Game) {
-    return
+    
   }
 }
 export class ChangeColor extends BlackCard {
+  askForColor = true;
   symbol = "color";
   name = "change color";
   PlayMe(game:Game) {

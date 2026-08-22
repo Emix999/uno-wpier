@@ -5,6 +5,7 @@ import { deck } from "./Deck";
 import { io } from "../server";
 import { ResponseEmit, ResponseEndTurn, ResponseJoinGame, ResponseTakeCard } from "./Interfaces";
 import { SocketEventMap } from "node:dgram";
+import { Color } from "./Types";
 
 export class Game{
     key:string;
@@ -78,7 +79,7 @@ export class Game{
         io.to(this.key).emit("endGame",{id:this.currentPlayer, name:this.players[this.currentPlayer].name});
     }
 
-    useCard(socket:Socket, cardId:number, callback: (response: ResponseEmit) => void){
+    useCard(socket:Socket, cardId:number, color:Color, callback: (response: ResponseEmit) => void){
         if(this.isDoingThisLegal(socket)&&this.isActionCount()){
             let card = this.players[this.currentPlayer].hand.get(cardId);
             if(card?.canYouPlayMe(this.cardOnTop)){

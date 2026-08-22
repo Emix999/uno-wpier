@@ -1,29 +1,37 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { socket } from "../socket"
-import { Card } from "../typesClasses/Cards"
+import { Card, ColoredCard } from "../typesClasses/Cards"
 import type { ResponseEmit, ResponseMyHand } from "../typesClasses/Interfaces";
+import ColorPicker from "./ColorPicker";
+import type { Color } from "../typesClasses/Types";
 
 
-function MyCards(props: {roomKey:string ,myCards:Card[], setCards: React.Dispatch<React.SetStateAction<Card[]>>}){
+function MyCards(props: { roomKey: string, myCards: Card[], setCards: React.Dispatch<React.SetStateAction<Card[]>> }) {
 
-    function handleUseCard(card:Card){
-        // socket.emit("endTurn", props.roomKey, (response:ResponseEmit)=>{
-        //     if(response.succes){
-        //         console.log(response.message);
-        //     }
-        //     else{
-        //         console.log(response.message);
-        //     }
-        // });
+    const [showColorPicker, setShowColorPicker] = useState<boolean>(false);
+    const [currentCard, setCurrentCard] = useState<Card>();
+    const [currentColor, setCurrentColor] = useState<Color>("black");
 
-        socket.emit("useCard", props.roomKey, card.id, (response:ResponseEmit)=>{
-            if(response.succes){
+    function handleUseCard(card: Card) {
+        setCurrentCard(card);
+        setCurrentColor(card.color);
+        if (card.askForColor) {
+            setShowColorPicker(true);
+        }
+        else{
+            emitUseCard();
+        }
+    }
+
+    function emitUseCard() {
+        socket.emit("useCard", props.roomKey, currentCard?.id, currentColor, (response: ResponseEmit) => {
+            if (response.succes) {
                 console.log(response.message);
                 props.setCards(prev =>
-                    prev.filter(c => c.id !== card.id)
+                    prev.filter(c => c.id !== currentCard?.id)
                 );
             }
-            else{
+            else {
                 console.log(response.message);
             }
         });
@@ -34,8 +42,8 @@ function MyCards(props: {roomKey:string ,myCards:Card[], setCards: React.Dispatc
         console.log("Chcę dostać kartę");
     }, []);
 
-    useEffect(()=>{
-        socket.on("myHand", (response:ResponseMyHand)=>{
+    useEffect(() => {
+        socket.on("myHand", (response: ResponseMyHand) => {
             props.setCards(response.cards);
         })
     }, [])
@@ -43,16 +51,23 @@ function MyCards(props: {roomKey:string ,myCards:Card[], setCards: React.Dispatc
 
     return (//to jest tymaczsowe... Jak pewnie się domyślasz :3
         <div>
-            My current cards are: 
+            {showColorPicker && (<ColorPicker
+                onDecision={(ChosenColor: Color) => {
+                    setCurrentColor(ChosenColor);
+                    emitUseCard();
+                    setShowColorPicker(false);
+                }}
+            />)}
+            My current cards are:
             {props.myCards.map((card, index) => (
-                <p 
-                key={index}
-                onClick={()=>handleUseCard(card)}
+                <p
+                    key={index}
+                    onClick={() => handleUseCard(card)}
                 >
                     {card.name}-{card.color}
                 </p>
             ))}
-                
+
         </div>
     )
 }
