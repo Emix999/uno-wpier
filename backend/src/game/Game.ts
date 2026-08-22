@@ -89,7 +89,9 @@ export class Game{
     }
 
     giveStartingCards(socket:Socket){
-        if(this.players[0].hand)
+        for(let pl of this.players){
+            if(pl.hand.size>0)return;
+        }
         console.log("usytawię karty dla graczy")
         for(let i=0;i<this.numberOfStartingCards;i++){
             for(let p of this.players){
