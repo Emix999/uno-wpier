@@ -1,0 +1,30 @@
+body{
+  background-color: rgb(192, 192, 192); /*potem będzie jakiś background imiage czy coś*/
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.contentBox{
+  background-color: rgb(168, 168, 168);
+  border-radius: 15px;
+  border: 5px solid rgb(30, 0, 0);
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  height: 500px;
+  width: 500px;
+}
+
+.settingsButton{ /*bacgroung image zamiast emoji dodać potem*/
+  background-color: rgb(109, 109, 109);
+  position: absolute;
+  border-radius: 7px;
+  border: 3px solid rgb(30, 0, 0);
+  top: 10px;
+  right: 10px;
+  height: 35px;
+  width: 35px;
+}

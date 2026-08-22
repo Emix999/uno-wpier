@@ -3,7 +3,7 @@ import CreateGame from './CreateGame'
 import { socket } from '../socket'
 import JoinGame from './JoinGame'
 import EnterName from './EnterName'
-
+import "./HomeScreen.css"
 
 
 function HomeScreen() {
@@ -28,10 +28,13 @@ function HomeScreen() {
 
   return (
     <main>
-      <CreateGame name={name}/>
-      <p>ID połączenia: {conId}</p>
-      <JoinGame name={name}/>
-      <EnterName name={name} setName={setName}/>
+      <div className='contentBox'>
+        <CreateGame name={name}/>
+        <p>ID połączenia: {conId}</p>
+        <JoinGame name={name}/>
+        <EnterName name={name} setName={setName}/>
+      </div>
+      <button className='settingsButton'>⚙️</button>
     </main>
 )
 }
