@@ -133,7 +133,7 @@ export class PlusFour extends BlackCard {
   symbol = "+4";
   name = "plus four";
   PlayMe(game:Game) {
-    
+      this.color=game.currentCardColor;
   }
 }
 export class ChangeColor extends BlackCard {
@@ -141,6 +141,6 @@ export class ChangeColor extends BlackCard {
   symbol = "color";
   name = "change color";
   PlayMe(game:Game) {
-    return
+      this.color=game.currentCardColor;
   }
 }

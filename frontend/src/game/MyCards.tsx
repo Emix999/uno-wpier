@@ -9,12 +9,12 @@ import type { Color } from "../typesClasses/Types";
 function MyCards(props: { roomKey: string, myCards: Card[], setCards: React.Dispatch<React.SetStateAction<Card[]>> }) {
 
     const [showColorPicker, setShowColorPicker] = useState<boolean>(false);
-    const [currentCard, setCurrentCard] = useState<Card>();
-    const [currentColor, setCurrentColor] = useState<Color>("black");
+    let currentCard:Card;
+    let currnetColor:Color="black";
 
     function handleUseCard(card: Card) {
-        setCurrentCard(card);
-        setCurrentColor(card.color);
+        currentCard=card;
+        currnetColor=card.color;
         if (card.askForColor) {
             setShowColorPicker(true);
         }
@@ -24,11 +24,11 @@ function MyCards(props: { roomKey: string, myCards: Card[], setCards: React.Disp
     }
 
     function emitUseCard() {
-        socket.emit("useCard", props.roomKey, currentCard?.id, currentColor, (response: ResponseEmit) => {
+        socket.emit("useCard", props.roomKey, currentCard.id, currnetColor, (response: ResponseEmit) => {
             if (response.succes) {
                 console.log(response.message);
                 props.setCards(prev =>
-                    prev.filter(c => c.id !== currentCard?.id)
+                    prev.filter(c => c.id !== currentCard.id)
                 );
             }
             else {
@@ -53,7 +53,7 @@ function MyCards(props: { roomKey: string, myCards: Card[], setCards: React.Disp
         <div>
             {showColorPicker && (<ColorPicker
                 onDecision={(ChosenColor: Color) => {
-                    setCurrentColor(ChosenColor);
+                    currnetColor=ChosenColor;
                     emitUseCard();
                     setShowColorPicker(false);
                 }}

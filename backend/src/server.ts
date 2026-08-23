@@ -47,6 +47,8 @@ io.on("connection", (socket) => {
   })
 
   socket.on('useCard', (key, cardId:number, color:Color, callback: (response: ResponseEmit) => void)=>{
+    console.log("id: "+cardId);
+    console.log("color: "+color);
     activeGames.get(key)?.useCard(socket, cardId, color, callback);
   })
 

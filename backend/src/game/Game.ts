@@ -17,6 +17,7 @@ export class Game{
     actionsThisTurn:number;
     numberOfStartingCards:number;
     hostIndex:number;
+    currentCardColor:Color;
 
     constructor(key:string, player1:Player){
         this.key=key;
@@ -29,6 +30,7 @@ export class Game{
         this.actionsThisTurn=0;
         this.numberOfStartingCards=1;
         this.hostIndex=0;
+        this.currentCardColor=this.cardOnTop.color;
     }
     addPlayer(player:Player){
         this.players.push(player);
@@ -84,9 +86,11 @@ export class Game{
             let card = this.players[this.currentPlayer].hand.get(cardId);
             if(card?.canYouPlayMe(this.cardOnTop)){
                 callback({succes: true, message: "card used succesfully"})
+                //to się dzieje już po czekach na to czy można zagrać kartę
+                this.currentCardColor=color;
+                this.createEffectOfCard(card);
                 this.cardOnTop=card;
                 this.players[this.currentPlayer].hand.delete(cardId);
-                this.createEffectOfCard(card);
                 io.to(this.key).emit("deckUpdate", this.cardOnTop);
                 this.actionsThisTurn++;
             }
