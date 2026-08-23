@@ -15,6 +15,7 @@ zmiana koloru jest 4
 //Tymczasowe uno zwykłe
 
 //cyfry
+/* zakomentowane żeby ułatwić sobie test np. plusów czy bloków
 deck.push(new One("red"));
 deck.push(new One("green"));
 deck.push(new One("yellow"));
@@ -128,3 +129,37 @@ deck.push(new ChangeColor());
 deck.push(new ChangeColor());
 deck.push(new ChangeColor());
 deck.push(new ChangeColor());
+*/
+
+
+
+
+//To służy do testów
+
+deck.push(new ChangeColor());
+deck.push(new ChangeColor());
+
+
+deck.push(new PlusFour());
+deck.push(new PlusFour());
+
+
+deck.push(new PlusTwo("yellow"));
+deck.push(new PlusTwo("blue"));
+deck.push(new PlusTwo("yellow"));
+deck.push(new PlusTwo("blue"));
+
+
+deck.push(new Eight("yellow"));
+deck.push(new Eight("blue"));
+deck.push(new Nine("yellow"));
+deck.push(new Nine("blue"));
+deck.push(new Zero("yellow"));
+deck.push(new Zero("blue"));
+
+deck.push(new Eight("yellow"));
+deck.push(new Eight("blue"));
+deck.push(new Nine("yellow"));
+deck.push(new Nine("blue"));
+deck.push(new Zero("yellow"));
+deck.push(new Zero("blue"));

@@ -7,6 +7,8 @@ export abstract class Card {
   static numberOfCards = 0;
   id: number;
   abstract askForColor: boolean;
+  numberCards:number=0;
+  numberStops:number=0;
 
   constructor(
     color: Color,
@@ -15,7 +17,9 @@ export abstract class Card {
     this.id = Card.numberOfCards;
     Card.numberOfCards++;
   }
-  abstract PlayMe(game:Game): void;
+  PlayMe(game:Game){
+    return
+  }
   abstract canYouPlayMe(currentCard: Card): boolean;
 }
 
@@ -39,99 +43,78 @@ export abstract class ColoredCard extends Card {
 export class One extends ColoredCard {
   symbol = "1";
   name = "one";
-  PlayMe(game:Game) {
-    return
-  }
+
 }
 export class Two extends ColoredCard {
   symbol = "2";
   name = "two";
-  PlayMe(game:Game) {
-    return
-  }
+
 }
 export class Three extends ColoredCard {
   symbol = "3";
   name = "three";
-  PlayMe(game:Game) {
-    return
-  }
+
 }
 export class Four extends ColoredCard {
   symbol = "4";
   name = "four";
-  PlayMe(game:Game) {
-    return
-  }
+
 }
 export class Five extends ColoredCard {
   symbol = "5";
   name = "five";
-  PlayMe(game:Game) {
-    return
-  }
+
 }
 export class Six extends ColoredCard {
   symbol = "6";
   name = "six";
-  PlayMe(game:Game) {
-    return
-  }
+
 }
 export class Seven extends ColoredCard {
   symbol = "7";
   name = "seven";
-  PlayMe(game:Game) {
-    return
-  }
+
 }
 export class Eight extends ColoredCard {
   symbol = "8";
   name = "eight";
-  PlayMe(game:Game) {
-    return
-  }
+
 }
 export class Nine extends ColoredCard {
   symbol = "9";
   name = "nine";
-  PlayMe(game:Game) {
-    return
-  }
+
 }
 export class Zero extends ColoredCard {
   symbol = "0";
   name = "zero";
-  PlayMe(game:Game) {
-    return
-  }
+
 }
 export class PlusTwo extends ColoredCard {
   symbol = "+2";
   name = "plus two";
-  PlayMe(game:Game) {
-    return
+  numberCards=2;
+  PlayMe(game: Game){
+    game.cardPool+=this.numberCards;
+    //game.numberToDeflect=this.numberCards;
   }
 }
 export class Skip extends ColoredCard {
   symbol = "(/)";
   name = "skip";
-  PlayMe(game:Game) {
-    return
-  }
+
 }
 export class Reverse extends ColoredCard {
   symbol = "-><-";
   name = "reverse";
-  PlayMe(game:Game) {
-    return
-  }
+
 }
 
 export class PlusFour extends BlackCard {
   askForColor = true;
   symbol = "+4";
   name = "plus four";
+  numberCards=2;
   PlayMe(game:Game) {
       this.color=game.currentCardColor;
   }

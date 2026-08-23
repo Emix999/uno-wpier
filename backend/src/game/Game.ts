@@ -18,6 +18,9 @@ export class Game{
     numberOfStartingCards:number;
     hostIndex:number;
     currentCardColor:Color;
+    cardPool:number;
+    //numberToDeflect:number;
+
 
     constructor(key:string, player1:Player){
         this.key=key;
@@ -28,9 +31,11 @@ export class Game{
         this.cardOnTop=this.gameDeck[this.gameDeck.length-1];
         this.gameDeck.pop();
         this.actionsThisTurn=0;
-        this.numberOfStartingCards=1;
+        this.numberOfStartingCards=7;
         this.hostIndex=0;
         this.currentCardColor=this.cardOnTop.color;
+        this.cardPool=0;
+        //this.numberToDeflect=0;
     }
     addPlayer(player:Player){
         this.players.push(player);
@@ -85,12 +90,16 @@ export class Game{
         if(this.isDoingThisLegal(socket)&&this.isActionCount()){
             let card = this.players[this.currentPlayer].hand.get(cardId);
             if(card?.canYouPlayMe(this.cardOnTop)){
+                this.players[this.currentPlayer].hand.delete(cardId);
                 callback({succes: true, message: "card used succesfully"})
                 //to się dzieje już po czekach na to czy można zagrać kartę
+                
+                //sprawdzenie plusów
+                if(this.cardPool>0&&card.numberCards==0)this.givePlusesPenalty(socket);
+
                 this.currentCardColor=color;
                 this.createEffectOfCard(card);
                 this.cardOnTop=card;
-                this.players[this.currentPlayer].hand.delete(cardId);
                 io.to(this.key).emit("deckUpdate", this.cardOnTop);
                 this.actionsThisTurn++;
             }
@@ -102,6 +111,24 @@ export class Game{
 
     createEffectOfCard(card:Card){
         card.PlayMe(this);
+    }
+
+    givePlusesPenalty(socket:Socket){
+        for(let i=0;i<this.cardPool;i++){
+            let p=this.players[this.currentPlayer];
+            let card=this.gameDeck[this.gameDeck.length-1];
+            this.gameDeck.pop();
+            p.hand.set(card.id, card);
+        }
+        this.sendPlayersHand(socket)
+    }
+
+    sendPlayersHand(socket:Socket){
+        if(this.isDoingThisLegal(socket)){
+            let p=this.players[this.currentPlayer];
+            const hand = [...p.hand.values()];
+            p.socket.emit("myHand", {succes: true, message: "Succesfully got hands of player", cards:hand});
+        }
     }
 
     giveStartingCards(socket:Socket){

@@ -24,6 +24,7 @@ function MyCards(props: { roomKey: string, myCards: Card[], setCards: React.Disp
     }
 
     function emitUseCard() {
+        console.log(currentCard);
         socket.emit("useCard", props.roomKey, currentCard.id, currnetColor, (response: ResponseEmit) => {
             if (response.succes) {
                 console.log(response.message);
