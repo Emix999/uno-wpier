@@ -3,7 +3,7 @@ import CreateGame from './CreateGame'
 import { socket } from '../socket'
 import JoinGame from './JoinGame'
 import EnterName from './EnterName'
-
+import "./HomeScreen.scss"
 
 
 function HomeScreen() {
@@ -28,10 +28,15 @@ function HomeScreen() {
 
   return (
     <main>
-      <CreateGame name={name}/>
-      <p>ID połączenia: {conId}</p>
-      <JoinGame name={name}/>
-      <EnterName name={name} setName={setName}/>
+      <p className='idPol'>ID połączenia: {conId}</p>
+      <div className='contentBox'>
+        <img src="assets/logo.png" alt="nouno" className='logo'/>
+        <span>your nick:</span>
+        <EnterName name={name} setName={setName}/>
+        <CreateGame name={name}/>        
+        <JoinGame name={name}/>
+      </div>
+      <button className='settingsButton'>⚙️</button>{/*image zamiast emoji dodać potem*/}
     </main>
 )
 }
