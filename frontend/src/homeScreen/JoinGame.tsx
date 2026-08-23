@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { socket } from '../socket'
 import { useState } from 'react'
 import type { ResponseJoinGame } from '../typesClasses/Interfaces';
-
+import "./HomeScreen.scss"
 
 
 
@@ -26,8 +26,11 @@ function JoinGame(props: { name: string }) {
 
   return (
     <div>
-      <input type="text" max="3" value={key} onChange={e => setKey(e.target.value)} />{/*ta trójka jest tutaj tylko tymczasowo jak coś*/}
-      <button onClick={handleJoinGame}>Join Game</button>
+      <button onClick={handleJoinGame} className='joinGame'>Join Game</button>
+      <div className='joinCode'>
+        <span>enter code to join:</span>
+        <input type="text" max="3" value={key} onChange={e => setKey(e.target.value)} />{/*ta trójka jest tutaj tylko tymczasowo jak coś*/}
+      </div>
     </div>
   )
 }
