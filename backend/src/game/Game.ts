@@ -19,7 +19,7 @@ export class Game{
     hostIndex:number;
     currentCardColor:Color;
     cardPool:number;
-    //numberToDeflect:number;
+    numberToDeflect:number;
 
 
     constructor(key:string, player1:Player){
@@ -35,7 +35,7 @@ export class Game{
         this.hostIndex=0;
         this.currentCardColor=this.cardOnTop.color;
         this.cardPool=0;
-        //this.numberToDeflect=0;
+        this.numberToDeflect=0;
     }
     addPlayer(player:Player){
         this.players.push(player);
@@ -79,6 +79,12 @@ export class Game{
             else this.currentPlayer++;
             io.to(this.key).emit("turnEnded", {succes:true, message: "turn ended", id:this.currentPlayer, name:this.players[this.currentPlayer].name});
             this.actionsThisTurn=0;
+
+            //tutaj jest początek tury następnego gracza
+            if(!this.isItPossibleToDefend())this.givePlusesPenalty(socket);
+            else{
+                //tutaj skończyłem
+            }
         }
     }
     
@@ -94,8 +100,6 @@ export class Game{
                 callback({succes: true, message: "card used succesfully"})
                 //to się dzieje już po czekach na to czy można zagrać kartę
                 
-                //sprawdzenie plusów
-                if(this.cardPool>0&&card.numberCards==0)this.givePlusesPenalty(socket);
 
                 this.currentCardColor=color;
                 this.createEffectOfCard(card);
@@ -109,8 +113,17 @@ export class Game{
         }
     }
 
+
     createEffectOfCard(card:Card){
         card.PlayMe(this);
+    }
+
+    isItPossibleToDefend(){
+        let sumOfPluses=0;
+        for(let c of this.players[this.currentPlayer].hand.values()){
+            sumOfPluses+=c.numberCards;
+        }
+        return sumOfPluses>=this.numberToDeflect;
     }
 
     givePlusesPenalty(socket:Socket){
